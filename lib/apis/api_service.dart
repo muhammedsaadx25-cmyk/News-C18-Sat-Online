@@ -9,7 +9,7 @@ import 'package:news/models/category_model.dart';
 
 class APIService {
   static const String baseUrl = "newsapi.org";
-  static const String apiKey = "811d8ca53d0d4ff281843e66552efcee";
+  static const String apiKey = "69500f03ae084e309303f8fe3a277f1f";
   static const String sourcesEndPoint = "/v2/top-headlines/sources";
   static const String articlesEndPoint = "/v2/everything";
 
