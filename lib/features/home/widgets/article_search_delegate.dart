@@ -111,9 +111,7 @@ class ArticleSearchDelegate extends SearchDelegate {
     );
   }
 
-  Future<List<Article>> _fetchArticles(String query) async {
-    return Article.articles;
-  }
+
 
   Future<List<Article>> _fetchArticlesSuggestions(
     String query,
