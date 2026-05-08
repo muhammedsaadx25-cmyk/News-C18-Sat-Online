@@ -36,4 +36,14 @@ class APIService {
     ArticlesResponse articlesResponse = ArticlesResponse.fromJson(json);
     return articlesResponse.articles;
   }
+  static Future<List<Article>?> searchArticles(String searchKey) async {
+    Uri url = Uri.https(baseUrl, articlesEndPoint, {
+      'apiKey': apiKey,
+      'q': searchKey,
+    });
+    http.Response serverResponse = await http.get(url);
+    var json = jsonDecode(serverResponse.body);
+    ArticlesResponse articlesResponse = ArticlesResponse.fromJson(json);
+    return articlesResponse.articles;
+  }
 }
