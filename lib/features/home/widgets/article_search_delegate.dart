@@ -121,22 +121,22 @@ class ArticleSearchDelegate extends SearchDelegate {
       List<Source>? sources = await APIService.getSources(
         CategoryModel.categories[1],
       );
-      if (sources != null && sources.isEmpty) {
+      if (sources == null || sources.isEmpty) {
         return [];
       } else {
-        List<Article>? articles = await APIService.getArticles(sources!.first);
-        if (articles != null && articles.isEmpty) {
+        List<Article>? articles = await APIService.getArticles(sources.first);
+        if (articles == null || articles.isEmpty) {
           return [];
         } else {
-          return articles!;
+          return articles;
         }
       }
     } else {
       List<Article>? articles = await APIService.searchArticles(query);
-      if (articles != null && articles.isEmpty) {
+      if (articles == null || articles.isEmpty) {
         return [];
       } else {
-        searchedArticles = articles!;
+        searchedArticles = articles;
         return articles;
       }
     }
