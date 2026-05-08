@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news/features/home/views/categories_view/categories_view.dart';
 import 'package:news/features/home/views/sources_view/sources_view.dart';
+import 'package:news/features/home/widgets/article_search_delegate.dart';
 import 'package:news/features/home/widgets/custom_drawer.dart';
 import 'package:news/models/category_model.dart';
 
@@ -23,6 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: [
+          IconButton(onPressed: ()async{
+            await showSearch(context: context, delegate: ArticleSearchDelegate());
+          }, icon: Icon(Icons.search,size: 24.sp,))
+        ],
       ),
       drawer:CustomDrawer(goToHome: goToHome,  ),
       body: view,
