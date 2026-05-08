@@ -44,6 +44,8 @@ Future<void> showArticleBottomSheet({
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
+                  maxLines: 7,
+                  overflow: TextOverflow.ellipsis,
                   article.description ?? "",
                   style: GoogleFonts.inter(
                     fontSize: 14.sp,
