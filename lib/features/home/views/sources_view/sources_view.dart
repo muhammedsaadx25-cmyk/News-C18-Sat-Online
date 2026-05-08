@@ -83,20 +83,22 @@ class _SourcesViewState extends State<SourcesView> {
 
                     );
           }),
-          Consumer<ArticlesViewModel>(builder: (_,viewModel, _ ){
-            print("Ana da5ale el articles Builder");
-            if(viewModel.isLoading){
-              return Center(child: CircularProgressIndicator(),);
-            }
-            if(viewModel.errorMessage.isNotEmpty){
-              return Center(child: Text(viewModel.errorMessage),);
-            }
-            List<Article> articles = viewModel.articles;
-            return Expanded(child: ListView.separated(
-                itemBuilder: (context, index)=> ArticleItem(article: articles[index]),
-                separatorBuilder: (context, index)=> SizedBox(height: 16.h,), itemCount: articles.length));
-
-          })
+          Expanded(
+            child: Consumer<ArticlesViewModel>(builder: (_,viewModel, _ ){
+              print("Ana da5ale el articles Builder");
+              if(viewModel.isLoading){
+                return Center(child: CircularProgressIndicator(),);
+              }
+              if(viewModel.errorMessage.isNotEmpty){
+                return Center(child: Text(viewModel.errorMessage),);
+              }
+              List<Article> articles = viewModel.articles;
+              return ListView.separated(
+                  itemBuilder: (context, index)=> ArticleItem(article: articles[index]),
+                  separatorBuilder: (context, index)=> SizedBox(height: 16.h,), itemCount: articles.length);
+            
+            }),
+          )
 
         ],
       ),
