@@ -13,7 +13,6 @@ class APIService {
   static const String sourcesEndPoint = "/v2/top-headlines/sources";
   static const String articlesEndPoint = "/v2/everything";
 
-  ///
   static Future<List<Source>?> getSources(CategoryModel category) async {
     Uri url = Uri.https(baseUrl, sourcesEndPoint, {
       'apiKey': apiKey,
@@ -25,7 +24,7 @@ class APIService {
     return sourcesResponse.sources;
   }
 
-  static Future<List<Article>?>getArticles(Source source, [String? searchKey]) async {
+  static Future<List<Article>?> getArticles(Source source, [String? searchKey]) async {
     Uri url = Uri.https(baseUrl, articlesEndPoint, {
       'apiKey': apiKey,
       'sources': source.id,
@@ -35,5 +34,17 @@ class APIService {
     var json = jsonDecode(serverResponse.body);
     ArticlesResponse articlesResponse = ArticlesResponse.fromJson(json);
     return articlesResponse.articles;
+  }
+
+  static Future<ArticlesResponse> searchArticles(String query, {int page = 1, int pageSize = 20}) async {
+    Uri url = Uri.https(baseUrl, articlesEndPoint, {
+      'apiKey': apiKey,
+      'q': query,
+      'page': page.toString(),
+      'pageSize': pageSize.toString(),
+    });
+    http.Response serverResponse = await http.get(url);
+    var json = jsonDecode(serverResponse.body);
+    return ArticlesResponse.fromJson(json);
   }
 }
