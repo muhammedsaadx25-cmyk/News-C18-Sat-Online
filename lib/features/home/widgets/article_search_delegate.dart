@@ -11,22 +11,11 @@ import '../views/sources_view/article_item.dart';
 
 class ArticleSearchDelegate extends SearchDelegate {
   List<Article> searchedArticles = [];
+  int page = 1;
+  int pageSize = 10;
+  final ScrollController _scrollController = ScrollController();
 
-  // @override
-  // ThemeData appBarTheme(BuildContext context) {
-  //   // TODO: implement appBarTheme
-  //   return ThemeData(
-  //     scaffoldBackgroundColor: ColorsManager.black,
-  //     inputDecorationTheme: InputDecorationTheme(
-  //       border: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(16.r),
-  //         borderSide: BorderSide(
-  //           color: ColorsManager.white,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -50,15 +39,15 @@ class ArticleSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-
     return ListView.separated(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
       itemCount: searchedArticles.length,
       itemBuilder: (context, index) {
-        return ArticleItem(
-          article: searchedArticles[index],
-          onClick: (_) {},
-        );
+        return ArticleItem(article: searchedArticles[index], onClick: (article) async {
+          showArticleBottomSheet(context: context, article: article, onViewFullArticleClick: (url) async{
+            await launchUrl(Uri.parse(url));
+          });
+        });
       },
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(height: 8.h);
@@ -69,7 +58,7 @@ class ArticleSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder(
-      future: _fetchArticlesSuggestions(query, context),
+      future: _fetchArticlesSuggestions(query, page, pageSize),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -84,6 +73,7 @@ class ArticleSearchDelegate extends SearchDelegate {
         }
         if (snapshot.hasData) {
           return ListView.separated(
+            controller: _scrollController,
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
@@ -111,11 +101,10 @@ class ArticleSearchDelegate extends SearchDelegate {
     );
   }
 
-
-
   Future<List<Article>> _fetchArticlesSuggestions(
     String query,
-    BuildContext context,
+    int page,
+    int pageSize,
   ) async {
     if (query.isEmpty) {
       List<Source>? sources = await APIService.getSources(
@@ -124,7 +113,12 @@ class ArticleSearchDelegate extends SearchDelegate {
       if (sources == null || sources.isEmpty) {
         return [];
       } else {
-        List<Article>? articles = await APIService.getArticles(sources.first);
+        List<Article>? articles = await APIService.getArticles(
+          sources.first,
+          "",
+          1,
+          5,
+        );
         if (articles == null || articles.isEmpty) {
           return [];
         } else {
@@ -132,7 +126,11 @@ class ArticleSearchDelegate extends SearchDelegate {
         }
       }
     } else {
-      List<Article>? articles = await APIService.searchArticles(query);
+      List<Article>? articles = await APIService.searchArticles(
+        query,
+        page,
+        pageSize,
+      );
       if (articles == null || articles.isEmpty) {
         return [];
       } else {
