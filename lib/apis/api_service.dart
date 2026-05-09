@@ -9,7 +9,7 @@ import 'package:news/models/category_model.dart';
 
 class APIService {
   static const String baseUrl = "newsapi.org";
-  static const String apiKey = "811d8ca53d0d4ff281843e66552efcee";
+  static const String apiKey = "69500f03ae084e309303f8fe3a277f1f";
   static const String sourcesEndPoint = "/v2/top-headlines/sources";
   static const String articlesEndPoint = "/v2/everything";
 
@@ -25,11 +25,25 @@ class APIService {
     return sourcesResponse.sources;
   }
 
-  static Future<List<Article>?>getArticles(Source source, [String? searchKey]) async {
+  static Future<List<Article>?>getArticles(Source source, [String? searchKey, int? page, int? pageSize ]) async {
     Uri url = Uri.https(baseUrl, articlesEndPoint, {
       'apiKey': apiKey,
       'sources': source.id,
       'q': searchKey,
+      'page': page.toString(),
+      'pageSize': pageSize.toString(),
+    });
+    http.Response serverResponse = await http.get(url);
+    var json = jsonDecode(serverResponse.body);
+    ArticlesResponse articlesResponse = ArticlesResponse.fromJson(json);
+    return articlesResponse.articles;
+  }
+  static Future<List<Article>?> searchArticles(String searchKey, int page, int pageSize) async {
+    Uri url = Uri.https(baseUrl, articlesEndPoint, {
+      'apiKey': apiKey,
+      'q': searchKey,
+      'page': page.toString(),
+      'pageSize': pageSize.toString(),
     });
     http.Response serverResponse = await http.get(url);
     var json = jsonDecode(serverResponse.body);
