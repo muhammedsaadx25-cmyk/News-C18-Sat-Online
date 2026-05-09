@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:news/core/resources/colors_manager.dart';
+import 'package:news/features/home/widgets/drawer_dropdown_section.dart';
+import 'package:news/features/home/widgets/drawer_header_widget.dart';
+import 'package:news/features/home/widgets/drawer_item.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key, required this.goToHome});
@@ -14,144 +16,38 @@ class CustomDrawer extends StatelessWidget {
       width: MediaQuery.sizeOf(context).width * 0.7,
       child: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            height: 166.h,
-            color: ColorsManager.white,
-            child: Text(
-              "News App",
-              style: GoogleFonts.inter(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: ColorsManager.black,
-              ),
-            ),
-          ),
+          const DrawerHeaderWidget(),
           SizedBox(height: 16.h),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () {
-                    goToHome();
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.home_filled, color: ColorsManager.white),
-                      SizedBox(width: 8),
-                      Text(
-                        "Go To Home",
-                        style: GoogleFonts.inter(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: ColorsManager.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 24.h),
-                Divider(height: 1, thickness: 1, color: ColorsManager.white),
-                SizedBox(height: 24.h),
-                Row(
-                  children: [
-                    Icon(Icons.mode_night_outlined, color: ColorsManager.white),
-                    SizedBox(width: 8),
-                    Text(
-                      "Theme",
-                      style: GoogleFonts.inter(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                        color: ColorsManager.white,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 8.h),
-
-                Container(
-                  padding: REdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(width: 1, color: ColorsManager.white),
-                  ),
-
-                  child: Row(
-                    children: [
-                      Text(
-                        "Dark",
-                        style: GoogleFonts.inter(
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.bold,
-                          color: ColorsManager.white,
-                        ),
-                      ),
-                      Spacer(),
-                      DropdownButton(
-                        underline: Container(),
-                        items: ["Light", "Dark"].map((value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (_) {},
-                      ),
-                    ],
-                  ),
+                DrawerItem(
+                  icon: Icons.home_filled,
+                  title: "Go To Home",
+                  onTap: goToHome,
                 ),
                 SizedBox(height: 24.h),
-                Divider(height: 1, thickness: 1, color: ColorsManager.white),
+                const Divider(
+                    height: 1, thickness: 1, color: ColorsManager.white),
                 SizedBox(height: 24.h),
-                Row(
-                  children: [
-                    Icon(Icons.language, color: ColorsManager.white),
-                    SizedBox(width: 8),
-                    Text(
-                      "Language",
-                      style: GoogleFonts.inter(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                        color: ColorsManager.white,
-                      ),
-                    ),
-                  ],
+                DrawerDropdownSection(
+                  title: "Theme",
+                  icon: Icons.mode_night_outlined,
+                  currentValue: "Dark",
+                  items: const ["Light", "Dark"],
+                  onChanged: (value) {},
                 ),
-                SizedBox(height: 16),
-                Container(
-                  padding: REdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(width: 1, color: ColorsManager.white),
-                  ),
-
-                  child: Row(
-                    children: [
-                      Text(
-                        "English",
-                        style: GoogleFonts.inter(
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.bold,
-                          color: ColorsManager.white,
-                        ),
-                      ),
-                      Spacer(),
-                      DropdownButton(
-                        underline: Container(),
-                        items: ["English", "Arabic"].map((value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (_) {},
-                      ),
-                    ],
-                  ),
+                SizedBox(height: 24.h),
+                const Divider(
+                    height: 1, thickness: 1, color: ColorsManager.white),
+                SizedBox(height: 24.h),
+                DrawerDropdownSection(
+                  title: "Language",
+                  icon: Icons.language,
+                  currentValue: "English",
+                  items: const ["English", "Arabic"],
+                  onChanged: (value) {},
                 ),
               ],
             ),
