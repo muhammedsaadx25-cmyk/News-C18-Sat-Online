@@ -25,21 +25,25 @@ class APIService {
     return sourcesResponse.sources;
   }
 
-  static Future<List<Article>?>getArticles(Source source, [String? searchKey]) async {
+  static Future<List<Article>?>getArticles(Source source, [String? searchKey, int? page, int? pageSize ]) async {
     Uri url = Uri.https(baseUrl, articlesEndPoint, {
       'apiKey': apiKey,
       'sources': source.id,
       'q': searchKey,
+      'page': page.toString(),
+      'pageSize': pageSize.toString(),
     });
     http.Response serverResponse = await http.get(url);
     var json = jsonDecode(serverResponse.body);
     ArticlesResponse articlesResponse = ArticlesResponse.fromJson(json);
     return articlesResponse.articles;
   }
-  static Future<List<Article>?> searchArticles(String searchKey) async {
+  static Future<List<Article>?> searchArticles(String searchKey, int page, int pageSize) async {
     Uri url = Uri.https(baseUrl, articlesEndPoint, {
       'apiKey': apiKey,
       'q': searchKey,
+      'page': page.toString(),
+      'pageSize': pageSize.toString(),
     });
     http.Response serverResponse = await http.get(url);
     var json = jsonDecode(serverResponse.body);
