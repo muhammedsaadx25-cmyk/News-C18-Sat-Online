@@ -8,6 +8,7 @@ import 'package:news/data/repositories/articles_repo_impl.dart';
 import 'package:news/features/home/views/sources_view/article_shimmer_item.dart';
 import 'package:news/features/home/views/sources_view/articles_view_model.dart';
 import 'package:news/features/search/views/widgets/search_results_list.dart';
+import 'package:news/features/search/views/widgets/search_text_field.dart';
 import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -75,44 +76,16 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         body: Column(
           children: [
-            Padding(
-              padding: REdgeInsets.all(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(25.r),
-                  border: Border.all(color: ColorsManager.white, width: 1),
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  style: GoogleFonts.inter(color: ColorsManager.white),
-                  onSubmitted: (_) => _performSearch(),
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    hintStyle: GoogleFonts.inter(color: ColorsManager.white.withOpacity(0.6)),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12.h),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: ColorsManager.white,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: const Icon(
-                        Icons.close,
-                        color: ColorsManager.white,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          _currentQuery = '';
-                          _articlesViewModel.loadArticles(searchKey: '');
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
+            SearchTextField(
+              controller: _searchController,
+              onSubmitted: _performSearch,
+              onClose: () {
+                _searchController.clear();
+                setState(() {
+                  _currentQuery = '';
+                  _articlesViewModel.loadArticles(searchKey: '');
+                });
+              },
             ),
             Expanded(
               child: Consumer<ArticlesViewModel>(
