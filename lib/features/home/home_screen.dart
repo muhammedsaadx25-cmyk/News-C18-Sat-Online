@@ -4,6 +4,8 @@ import 'package:news/features/home/views/sources_view/sources_view.dart';
 import 'package:news/features/home/widgets/custom_drawer.dart';
 import 'package:news/models/category_model.dart';
 
+import 'package:news/features/search/views/search_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -20,6 +22,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SearchScreen()),
+              );
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
       ),
       drawer:CustomDrawer(goToHome: goToHome,  ),
       body: view,
@@ -44,9 +57,4 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
-
-/// Request Type
-/// 1- Get, Pot Delete Update
-/// 2- function name
-/// 3- parameters list
-/// 4- return type
+

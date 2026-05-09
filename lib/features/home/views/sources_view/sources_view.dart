@@ -3,22 +3,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news/core/resources/colors_manager.dart';
 import 'package:news/data/apis/api_service.dart';
-import 'package:news/data/apis/articlesResponse/Article.dart';
-import 'package:news/data/apis/sources_response/Source.dart';
+import 'package:news/data/apis/articlesResponse/article.dart';
+import 'package:news/data/apis/sources_response/source.dart';
 import 'package:news/data/data_sources/articles_api_datasource_impl.dart';
 import 'package:news/data/data_sources/sources_api_data_source_impl.dart';
 import 'package:news/data/repositories/articles_repo_impl.dart';
 import 'package:news/data/repositories/sources_repo_impl.dart';
 import 'package:news/features/home/views/sources_view/article_item.dart';
-import 'package:news/features/home/views/sources_view/articles_viewModel.dart';
+import 'package:news/features/home/views/sources_view/articles_view_model.dart';
 import 'package:news/features/home/views/sources_view/sources_viewmodel.dart';
 import 'package:news/models/category_model.dart';
+import 'package:news/features/home/views/sources_view/article_shimmer_item.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SourcesView extends StatefulWidget {
-  SourcesView({super.key, required this.category});
+  const SourcesView({super.key, required this.category});
 
-  CategoryModel category;
+  final CategoryModel category;
 
   @override
   State<SourcesView> createState() => _SourcesViewState();
@@ -27,12 +29,25 @@ class SourcesView extends StatefulWidget {
 class _SourcesViewState extends State<SourcesView> {
   late SourcesViewModel sourcesViewModel;
   late ArticlesViewModel articlesViewModel;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _scrollController.addListener(_onScroll);
     fetchData();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      articlesViewModel.loadMoreArticles();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void fetchData() async {
@@ -48,7 +63,7 @@ class _SourcesViewState extends State<SourcesView> {
     );
     await sourcesViewModel.loadSources(widget.category);
     articlesViewModel.loadArticles(
-      (sourcesViewModel.state as SourcesSuccess).sources[0],
+      sourceId: (sourcesViewModel.state as SourcesSuccess).sources[0].id,
     );
   }
 
@@ -68,14 +83,25 @@ class _SourcesViewState extends State<SourcesView> {
                 case SourcesInitial():
                   return Container();
                 case SourcesLoading():
-                  return Center(child: CircularProgressIndicator());
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[800]!,
+                    highlightColor: Colors.grey[600]!,
+                    child: Container(
+                      height: 40.h,
+                      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[900],
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                    ),
+                  );
                 case SourcesSuccess():
                   List<Source> sources = state.sources;
                   return DefaultTabController(
                     length: sources.length,
                     child: TabBar(
                       onTap: (index) {
-                        articlesViewModel.loadArticles(sources[index]);
+                        articlesViewModel.loadArticles(sourceId: sources[index].id);
                       },
                       tabAlignment: TabAlignment.start,
                       dividerColor: Colors.transparent,
@@ -109,36 +135,38 @@ class _SourcesViewState extends State<SourcesView> {
             },
           ),
           Consumer<ArticlesViewModel>(
-            builder: (_, viewModel, _) {
-              var state = viewModel.state;
+            builder: (context, viewModel, child) {
+              final state = viewModel.state;
 
-              switch (state) {
-                case ArticlesLoading():
-                  {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                case ArticlesError():
-                  {
-                    return Center(child: Text(state.message));
-                  }
-                case ArticlesSuccess():
-                  {
-                    List<Article> articles = state.articles;
-                    return Expanded(
-                      child: ListView.separated(
-                        itemBuilder: (context, index) =>
-                            ArticleItem(article: articles[index]),
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 16.h),
-                        itemCount: articles.length,
+              if (state is ArticlesLoading) {
+                return const ArticlesShimmerList();
+              } else if (state is ArticlesError) {
+                return Center(child: Text(state.message));
+              } else if (state is ArticlesSuccess) {
+                final List<Article> articles = state.articles;
+                return Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                          controller: _scrollController,
+                          itemBuilder: (context, index) =>
+                              ArticleItem(article: articles[index]),
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 16.h),
+                          itemCount: articles.length,
+                        ),
                       ),
-                    );
-                  }
-                case ArticlesInitial():
-                  return Container();
-                case null:
-                  return Container();
+                      if (state.isFetchingMore)
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          child: const ArticleShimmerItem(),
+                        ),
+                    ],
+                  ),
+                );
               }
+              return const SizedBox.shrink();
             },
           ),
         ],

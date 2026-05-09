@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:news/core/resources/colors_manager.dart';
 
 class CustomDrawer extends StatelessWidget {
-  CustomDrawer({super.key, required this.goToHome});
+  const CustomDrawer({super.key, required this.goToHome});
 
-  void Function() goToHome;
+  final void Function() goToHome;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'Article.dart';
+import 'article.dart';
 
 class ArticlesResponse {
   ArticlesResponse({

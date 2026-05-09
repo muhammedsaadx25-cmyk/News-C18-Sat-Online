@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news/models/category_model.dart';
 
 class CategoryItem extends StatelessWidget {
-   CategoryItem({super.key, required this.category});
-CategoryModel category;
+  const CategoryItem({super.key, required this.category});
+  final CategoryModel category;
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
