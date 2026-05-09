@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:injectable/injectable.dart';
 import 'package:news/data/apis/articlesResponse/Article.dart';
 import 'package:news/data/apis/articlesResponse/ArticlesResponse.dart';
 import 'package:news/data/apis/result.dart';
 import 'package:news/data/apis/sources_response/Source.dart';
 import 'package:news/data/apis/sources_response/SourcesResponse.dart';
 import 'package:news/models/category_model.dart';
-
+@singleton
 class APIService {
   static const String baseUrl = "newsapi.org";
   static const String apiKey = "811d8ca53d0d4ff281843e66552efcee";

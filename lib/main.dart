@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:news/core/resources/routes_manager.dart';
+import 'package:news/di/di.dart';
 
 import 'config/theme/theme_manager.dart';
 
 void main() {
+  configureDependencies();
   runApp(const News());
 }
 
-class News extends StatelessWidget {
+class News  extends StatelessWidget{
   const News({super.key});
 
 
@@ -30,4 +32,8 @@ class News extends StatelessWidget {
 
     );
   }
+}
+
+add(int n1){
+
 }

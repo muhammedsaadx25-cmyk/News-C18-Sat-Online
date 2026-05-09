@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
 import 'package:news/base_viewModel.dart';
 import 'package:news/data/apis/api_service.dart';
@@ -6,7 +7,7 @@ import 'package:news/data/apis/articlesResponse/Article.dart';
 import 'package:news/data/apis/result.dart';
 import 'package:news/data/apis/sources_response/Source.dart';
 import 'package:news/data/repositories/articles_repository.dart';
-
+@injectable
 class ArticlesViewModel extends BaseViewMode<ArticlesState> {
 ArticlesRepository articlesRepository;
 ArticlesViewModel({required this.articlesRepository});

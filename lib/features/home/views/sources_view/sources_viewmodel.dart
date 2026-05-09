@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
 import 'package:news/base_viewModel.dart';
 import 'package:news/data/apis/api_service.dart';
@@ -7,7 +8,7 @@ import 'package:news/data/apis/sources_response/Source.dart';
 import 'package:news/data/repositories/sources_repository.dart';
 import 'package:news/features/home/views/sources_view/articles_viewModel.dart';
 import 'package:news/models/category_model.dart';
-
+@injectable
 class SourcesViewModel extends BaseViewMode<SourcesState> {
 
 SourcesRepository sourcesRepository;
